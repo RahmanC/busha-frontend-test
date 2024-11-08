@@ -1,12 +1,15 @@
 import { Layout } from "./layout";
+import { AccountList } from "./screens/account-list";
 import { GlobalStyle } from "./styles/GlobalStyle";
 
 function App() {
   return (
-    <>
+    <div id="modal-root">
       <GlobalStyle />
-      <Layout>...</Layout>
-    </>
+      <Layout>
+        <AccountList />
+      </Layout>
+    </div>
   );
 }
 
