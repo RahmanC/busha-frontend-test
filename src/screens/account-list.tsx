@@ -73,49 +73,54 @@ export const AccountList = () => {
     setAccounts((prev) => [...prev, newWallet]);
   };
 
-  if (loading) {
-    return <LoadingUI />;
-  }
-
-  if (error) {
-    return <ErrorUI handleClick={fetchAccounts} />;
-  }
-
   return (
     <WalletSection>
       <Header>
         <Title>Wallets</Title>
-        <AddButton aria-label="Add new wallet" onClick={() => setIsModal(true)}>
-          + Add new wallet
-        </AddButton>
+        {(!loading || !error) && (
+          <AddButton
+            aria-label="Add new wallet"
+            onClick={() => setIsModal(true)}
+          >
+            + Add new wallet
+          </AddButton>
+        )}
       </Header>
-      <Divider />
-      <WalletGrid>
-        {accounts.map((account) => (
-          <WalletCard key={account.id}>
-            <WalletHeader>
-              <CurrencyIcon
-                src={account.imgURL}
-                alt={`${account.name} icon`}
-                data-testid={`icon-${account.id}`}
-              />
-              <CurrencyName data-testid={`name-${account.id}`}>
-                {account.name}
-              </CurrencyName>
-            </WalletHeader>
-            <WalletContent>
-              <Balance data-testid={`balance-${account.id}`}>
-                {formatBalance(account.balance, account.currency)}
-              </Balance>
-              <ArrowContainer>
-                <ArrowButton aria-label="View wallet details">
-                  <CaretIcon />
-                </ArrowButton>
-              </ArrowContainer>
-            </WalletContent>
-          </WalletCard>
-        ))}
-      </WalletGrid>
+      {loading ? (
+        <LoadingUI />
+      ) : error ? (
+        <ErrorUI handleClick={fetchAccounts} />
+      ) : (
+        <>
+          <Divider />
+          <WalletGrid>
+            {accounts.map((account) => (
+              <WalletCard key={account.id}>
+                <WalletHeader>
+                  <CurrencyIcon
+                    src={account.imgURL}
+                    alt={`${account.name} icon`}
+                    data-testid={`icon-${account.id}`}
+                  />
+                  <CurrencyName data-testid={`name-${account.id}`}>
+                    {account.name}
+                  </CurrencyName>
+                </WalletHeader>
+                <WalletContent>
+                  <Balance data-testid={`balance-${account.id}`}>
+                    {formatBalance(account.balance, account.currency)}
+                  </Balance>
+                  <ArrowContainer>
+                    <ArrowButton aria-label="View wallet details">
+                      <CaretIcon />
+                    </ArrowButton>
+                  </ArrowContainer>
+                </WalletContent>
+              </WalletCard>
+            ))}
+          </WalletGrid>
+        </>
+      )}
       <AddWallet
         isOpen={isModal}
         onClose={() => setIsModal(false)}
