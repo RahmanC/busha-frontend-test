@@ -1,5 +1,13 @@
+import { Layout } from "./layout";
+import { GlobalStyle } from "./styles/GlobalStyle";
+
 function App() {
-  return <h1>Busha</h1>;
+  return (
+    <>
+      <GlobalStyle />
+      <Layout>...</Layout>
+    </>
+  );
 }
 
 export default App;
