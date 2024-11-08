@@ -3,8 +3,8 @@ import { LoadingSpinner } from "../styles/account-list";
 
 export const LoadingUI = () => {
   return (
-    <LoadingSpinner aria-label="Loading...">
-      <Loader />
+    <LoadingSpinner>
+      <Loader size={84} />
     </LoadingSpinner>
   );
 };

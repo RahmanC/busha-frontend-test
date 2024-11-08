@@ -55,14 +55,16 @@ export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
       setSelectedCurrency(data[0]?.currency || "");
     } catch (err) {
       setError(true);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const createWallet = async () => {
     if (!selectedCurrency) return;
 
     setCreating(true);
+    setPostError("");
     try {
       const response = await fetch(`${base_url}/accounts`, {
         method: "POST",
@@ -74,16 +76,17 @@ export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error);
+        throw new Error(error.error || "Network error");
       }
 
       const newWallet = await response.json();
       onWalletCreated?.(newWallet);
       onClose();
     } catch (error: any) {
-      setPostError(error?.message);
+      setPostError(error.message || "Network error");
+    } finally {
+      setCreating(false);
     }
-    setCreating(false);
   };
 
   useEffect(() => {
@@ -98,14 +101,23 @@ export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
     }
 
     if (error) {
-      return <ErrorUI handleClick={fetchWallets} />;
+      return (
+        <ErrorUI
+          handleClick={fetchWallets}
+          aria-label="Error fetching wallets"
+        />
+      );
     }
 
     return (
-      <ModalContent>
+      <ModalContent data-testid="modal">
         <Header>
           <Title>Add new wallet</Title>
-          <CloseButton onClick={onClose}>
+          <CloseButton
+            onClick={onClose}
+            aria-label="Close button"
+            role="button"
+          >
             <CloseIcon />
           </CloseButton>
         </Header>
@@ -117,6 +129,7 @@ export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
         <Select
           value={selectedCurrency}
           onChange={(e) => setSelectedCurrency(e.target.value)}
+          role="combobox"
         >
           {wallets.map((wallet) => (
             <option key={wallet.currency} value={wallet.currency}>
@@ -128,8 +141,10 @@ export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
           <CreateButton
             onClick={createWallet}
             disabled={creating || !selectedCurrency}
+            aria-label="Create wallet"
+            title={creating ? "Loading..." : "Create wallet"}
           >
-            {creating ? "Creating..." : "Create wallet"}
+            {creating ? "Loading..." : "Create wallet"}
           </CreateButton>
         </ButtonContainer>
 
@@ -139,7 +154,10 @@ export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
               <ErrorIcon />
               <ErrorLabel>{postError}</ErrorLabel>
             </ErrorLeftSide>
-            <CloseErrorButton onClick={() => setPostError("")}>
+            <CloseErrorButton
+              onClick={() => setPostError("")}
+              aria-label="Close error"
+            >
               <CloseError />
             </CloseErrorButton>
           </ErrorContainer>
@@ -148,5 +166,9 @@ export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
     );
   };
 
-  return <Modal isOpen={isOpen}>{renderContent()}</Modal>;
+  return (
+    <Modal isOpen={isOpen} aria-label="Add Wallet Modal">
+      {renderContent()}
+    </Modal>
+  );
 };
