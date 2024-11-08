@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { ReactComponent as NetworkErrorIcon } from "../assets/svg/error.svg";
 import { ReactComponent as CaretIcon } from "../assets/svg/arrow.svg";
-import Loader from "../components/shared/Loader";
 import { AddWallet } from "./add-wallet";
 import {
   AddButton,
@@ -10,18 +8,17 @@ import {
   Balance,
   CurrencyIcon,
   CurrencyName,
-  ErrorContainer,
-  ErrorLabel,
+  Divider,
   Header,
-  LoadingSpinner,
   Title,
-  TryAgainButton,
   WalletCard,
   WalletContent,
   WalletGrid,
   WalletHeader,
   WalletSection,
 } from "../styles/account-list";
+import { LoadingUI } from "../common/loading-ui";
+import { ErrorUI } from "../common/Error-ui";
 
 interface Account {
   id: string;
@@ -72,44 +69,46 @@ export const AccountList = () => {
     fetchAccounts();
   }, []);
 
+  const handleWalletCreated = (newWallet: Account) => {
+    setAccounts((prev) => [...prev, newWallet]);
+  };
+
   if (loading) {
-    return (
-      <LoadingSpinner aria-label="Loading...">
-        <Loader />
-        <p>Loading...</p>
-      </LoadingSpinner>
-    );
+    return <LoadingUI />;
   }
 
   if (error) {
-    return (
-      <ErrorContainer>
-        <NetworkErrorIcon />
-        <ErrorLabel>Network error</ErrorLabel>
-        <TryAgainButton onClick={fetchAccounts}>Try again</TryAgainButton>
-      </ErrorContainer>
-    );
+    return <ErrorUI handleClick={fetchAccounts} />;
   }
 
   return (
     <WalletSection>
       <Header>
         <Title>Wallets</Title>
-        <AddButton onClick={() => setIsModal(true)}>+ Add new wallet</AddButton>
+        <AddButton aria-label="Add new wallet" onClick={() => setIsModal(true)}>
+          + Add new wallet
+        </AddButton>
       </Header>
+      <Divider />
       <WalletGrid>
-        {accounts?.map((account) => (
+        {accounts.map((account) => (
           <WalletCard key={account.id}>
             <WalletHeader>
-              <CurrencyIcon src={account.imgURL} alt={`${account.name} icon`} />
-              <CurrencyName>{account.name}</CurrencyName>
+              <CurrencyIcon
+                src={account.imgURL}
+                alt={`${account.name} icon`}
+                data-testid={`icon-${account.id}`}
+              />
+              <CurrencyName data-testid={`name-${account.id}`}>
+                {account.name}
+              </CurrencyName>
             </WalletHeader>
             <WalletContent>
-              <Balance>
+              <Balance data-testid={`balance-${account.id}`}>
                 {formatBalance(account.balance, account.currency)}
               </Balance>
               <ArrowContainer>
-                <ArrowButton>
+                <ArrowButton aria-label="View wallet details">
                   <CaretIcon />
                 </ArrowButton>
               </ArrowContainer>
@@ -117,7 +116,11 @@ export const AccountList = () => {
           </WalletCard>
         ))}
       </WalletGrid>
-      <AddWallet isOpen={isModal} onClose={() => {}} />
+      <AddWallet
+        isOpen={isModal}
+        onClose={() => setIsModal(false)}
+        onWalletCreated={handleWalletCreated}
+      />
     </WalletSection>
   );
 };

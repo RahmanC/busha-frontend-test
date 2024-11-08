@@ -8,6 +8,12 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const Divider = styled.div`
+  border-bottom: 1px solid #d3d5d8;
+  opacity: 50%;
+  marging-top: 16px;
   margin-bottom: 24px;
 `;
 
@@ -91,11 +97,15 @@ const LoadingSpinner = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px;
+  height: 80vh;
 `;
 
 const ErrorContainer = styled.div`
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
 `;
 
 const TryAgainButton = styled.button`
@@ -134,4 +144,5 @@ export {
   Title,
   Header,
   WalletSection,
+  Divider,
 };
