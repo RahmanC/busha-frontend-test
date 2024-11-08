@@ -77,7 +77,7 @@ export const AccountList = () => {
     <WalletSection>
       <Header>
         <Title>Wallets</Title>
-        {(!loading || !error) && (
+        {!loading && !error && (
           <AddButton
             aria-label="Add new wallet"
             onClick={() => setIsModal(true)}
