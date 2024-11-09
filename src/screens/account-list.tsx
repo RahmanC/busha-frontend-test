@@ -43,7 +43,7 @@ const formatBalance = (balance: string, currency: string) => {
   return `${balance} ${currency}`;
 };
 
-const base_url = "http://localhost:3090";
+const base_url = process.env.REACT_BASE_URL;
 
 export const AccountList = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);

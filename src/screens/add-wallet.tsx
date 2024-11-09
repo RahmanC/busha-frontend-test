@@ -34,7 +34,7 @@ interface Wallet {
   imgURL: string;
 }
 
-const base_url = "http://localhost:3090";
+const base_url = process.env.REACT_BASE_URL;
 
 export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
