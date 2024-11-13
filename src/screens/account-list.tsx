@@ -6,7 +6,6 @@ import {
   ArrowButton,
   ArrowContainer,
   Balance,
-  CurrencyIcon,
   CurrencyName,
   Divider,
   Header,
@@ -19,8 +18,9 @@ import {
 } from "../styles/account-list";
 import { LoadingUI } from "../common/loading-ui";
 import { ErrorUI } from "../common/Error-ui";
+import { formatBalance, getCurrencyIcon, getFallbackName } from "../hooks";
 
-interface Account {
+export interface Account {
   id: string;
   currency: string;
   hold: string;
@@ -32,16 +32,6 @@ interface Account {
   payout: boolean;
   imgURL: string;
 }
-
-const formatBalance = (balance: string, currency: string) => {
-  if (currency === "NGN") {
-    return `₦ ${parseFloat(balance).toLocaleString("en-NG", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
-  }
-  return `${balance} ${currency}`;
-};
 
 const base_url = process.env.REACT_BASE_URL;
 
@@ -94,21 +84,17 @@ export const AccountList = () => {
         <>
           <Divider />
           <WalletGrid>
-            {accounts.map((account) => (
+            {accounts?.map((account) => (
               <WalletCard key={account.id}>
                 <WalletHeader>
-                  <CurrencyIcon
-                    src={account.imgURL}
-                    alt={`${account.name} icon`}
-                    data-testid={`icon-${account.id}`}
-                  />
+                  {getCurrencyIcon(account.currency)}
                   <CurrencyName data-testid={`name-${account.id}`}>
-                    {account.name}
+                    {account.name ?? getFallbackName(account.currency)}
                   </CurrencyName>
                 </WalletHeader>
                 <WalletContent>
                   <Balance data-testid={`balance-${account.id}`}>
-                    {formatBalance(account.balance, account.currency)}
+                    {formatBalance(account.balance ?? 0.0, account.currency)}
                   </Balance>
                   <ArrowContainer>
                     <ArrowButton aria-label="View wallet details">
@@ -125,6 +111,7 @@ export const AccountList = () => {
         isOpen={isModal}
         onClose={() => setIsModal(false)}
         onWalletCreated={handleWalletCreated}
+        existingAccounts={accounts}
       />
     </WalletSection>
   );

@@ -9,11 +9,26 @@ const NavbarWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  width: 100%;
+
+  @media (max-width: 768px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 12px 16px;
+  }
 `;
 
 const StyledLogo = styled(Logo)`
   width: 120px;
   height: auto;
+
+  @media (max-width: 768px) {
+    width: 100px;
+  }
 `;
 
 const UserInfo = styled.div`
@@ -23,6 +38,10 @@ const UserInfo = styled.div`
   color: #3e4c59;
   font-size: 14px;
   font-weight: medium;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const UserAvatar = styled.div`
@@ -34,6 +53,18 @@ const UserAvatar = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 18px;
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
 `;
 
-export { NavbarWrapper, StyledLogo, UserInfo, UserAvatar };
+const WithMenuWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
+export { NavbarWrapper, StyledLogo, UserInfo, UserAvatar, WithMenuWrapper };

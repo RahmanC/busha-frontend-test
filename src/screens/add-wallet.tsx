@@ -20,10 +20,12 @@ import {
   SelectLabel,
   Title,
 } from "../styles/add-wallet";
+import { Account } from "./account-list";
 
 interface IAddWallet {
   onClose: () => void;
   isOpen: boolean;
+  existingAccounts: Account[];
   onWalletCreated?: (newWallet: any) => void;
 }
 
@@ -36,7 +38,12 @@ interface Wallet {
 
 const base_url = process.env.REACT_BASE_URL;
 
-export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
+export const AddWallet = ({
+  onClose,
+  isOpen,
+  onWalletCreated,
+  existingAccounts,
+}: IAddWallet) => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [loading, setLoading] = useState(true);
@@ -62,6 +69,16 @@ export const AddWallet = ({ onClose, isOpen, onWalletCreated }: IAddWallet) => {
 
   const createWallet = async () => {
     if (!selectedCurrency) return;
+
+    // Check if the wallet already exists in the account list
+    const walletExists = existingAccounts?.some(
+      (account) => account.currency === selectedCurrency
+    );
+
+    if (walletExists) {
+      setPostError("Wallet already exists.");
+      return;
+    }
 
     setCreating(true);
     setPostError("");

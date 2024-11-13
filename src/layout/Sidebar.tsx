@@ -1,13 +1,20 @@
 import { MenuItem, SidebarWrapper } from "../styles/sidebar";
 
-export const Sidebar = () => {
+interface ISidebar {
+  isVisible: boolean;
+}
+export const Sidebar = (props: ISidebar) => {
   return (
-    <SidebarWrapper>
-      <MenuItem active>Wallets</MenuItem>
-      <MenuItem>Prices</MenuItem>
-      <MenuItem>Peer2Peer</MenuItem>
-      <MenuItem>Activity</MenuItem>
-      <MenuItem>Settings</MenuItem>
-    </SidebarWrapper>
+    <>
+      {props.isVisible && (
+        <SidebarWrapper>
+          <MenuItem active>Wallets</MenuItem>
+          <MenuItem>Prices</MenuItem>
+          <MenuItem>Peer2Peer</MenuItem>
+          <MenuItem>Activity</MenuItem>
+          <MenuItem>Settings</MenuItem>
+        </SidebarWrapper>
+      )}
+    </>
   );
 };
